@@ -6,7 +6,7 @@ public enum StartOption implements WithManual {
 
     FILE("file", "--file=<FILEPATH>"),
     REFRESH("refresh", "--refresh=<SECONDS>"),
-    CONVERSION("conversion", "--conversion"),
+    CONVERSION("conversion", "--conversion(not implemented yet...)"),
     HELP("help", "--help");
 
     private String option;

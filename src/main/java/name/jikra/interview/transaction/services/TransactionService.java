@@ -1,8 +1,8 @@
 package name.jikra.interview.transaction.services;
 
 import name.jikra.interview.transaction.constants.TerminalOption;
-import name.jikra.interview.transaction.dao.TransactionDao;
 import name.jikra.interview.transaction.entities.Transaction;
+import name.jikra.interview.transaction.repositories.TransactionRepository;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,20 +19,20 @@ import java.util.Map;
 @Transactional
 public class TransactionService {
 
-    private final TransactionDao dao;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionService(TransactionDao dao) {
-        this.dao = dao;
+    public TransactionService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
     }
 
     public void persist(Transaction transaction) {
-        dao.create(transaction);
+        transactionRepository.save(transaction);
     }
 
     public Map<String, BigDecimal> findAllAndGroupByCurrencyCode() {
         Map<String, BigDecimal> result = new HashMap<>();
-        List<Transaction> allEntries = dao.getAllEntries();
+        List<Transaction> allEntries = transactionRepository.findAll();
 
         allEntries.forEach(t -> result.put(t.getCurrencyCode(),
                 result.containsKey(t.getCurrencyCode())
@@ -43,12 +43,11 @@ public class TransactionService {
     }
 
     public void deleteAll() {
-        dao.deleteAll();
+        transactionRepository.deleteAll();
     }
 
     public void persistFiles(List<String> filePaths) {
         for (String filePath : filePaths) {
-            System.out.println("Persisting file " + filePath + "...");
             File file = new File(filePath);
 
             try {
@@ -65,12 +64,9 @@ public class TransactionService {
     public void persist(String entry) {
         try {
             Double value = Double.valueOf(entry.substring(4).replace(",", "."));
-
-            Transaction transaction = new Transaction();
-            transaction.setCurrencyCode(entry.substring(0, 3).toUpperCase());
-            transaction.setValue(BigDecimal.valueOf(value));
-
-            persist(transaction);
+            persist(new Transaction(
+                    entry.substring(0, 3).toUpperCase(),
+                    BigDecimal.valueOf(value)));
         } catch (Exception e) {
             e.printStackTrace();
         }

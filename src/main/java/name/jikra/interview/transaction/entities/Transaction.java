@@ -1,12 +1,10 @@
 package name.jikra.interview.transaction.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "transaction")
 public class Transaction {
 
     @Id
@@ -15,6 +13,19 @@ public class Transaction {
 
     private String currencyCode;
     private BigDecimal value;
+
+    public Transaction(final String currencyCode, final BigDecimal value) {
+        this.currencyCode = currencyCode;
+        this.value = value;
+    }
+
+    public Transaction() {
+        // Empty
+    }
+
+    public long getId() {
+        return id;
+    }
 
     public String getCurrencyCode() {
         return currencyCode;

@@ -1,7 +1,7 @@
 package name.jikra.interview.transaction.services;
 
-import name.jikra.interview.transaction.dao.FxRateDao;
 import name.jikra.interview.transaction.entities.FxRate;
+import name.jikra.interview.transaction.repositories.FxRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +12,15 @@ import java.util.List;
 @Transactional
 public class FxRateService {
 
-    private final FxRateDao dao;
+    private final FxRateRepository repository;
 
     @Autowired
-    public FxRateService(FxRateDao dao) {
-        this.dao = dao;
+    public FxRateService(FxRateRepository repository) {
+        this.repository = repository;
     }
 
     public void persist(FxRate fxRate) {
-        dao.create(fxRate);
+        repository.save(fxRate);
     }
 
     public FxRate findByCurrencyCode() {
@@ -29,10 +29,10 @@ public class FxRateService {
     }
 
     public List<FxRate> findAll() {
-        return dao.getAllEntries();
+        return repository.findAll();
     }
 
     public void deleteAll() {
-        dao.deleteAll();
+        repository.deleteAll();
     }
 }
